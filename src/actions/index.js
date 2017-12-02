@@ -1,9 +1,12 @@
 import axios from 'axios';
 
-export const FETCH_POSTS = 'FETCH_POSTS';
-export const FETCH_POST = 'FETCH_POST';
-export const CREATE_POST = 'CREATE_POST';
-export const DELETE_POST = 'DELETE_POST';
+import {
+  CHANGE_AUTH,
+  FETCH_POSTS,
+  FETCH_POST,
+  CREATE_POST,
+  DELETE_POST
+} from './types';
 
 const ROOT_URL = 'http://reduxblog.herokuapp.com/api';
 const API_KEY = '?key=test';
@@ -48,3 +51,10 @@ export const deletePost = (id, callback) => {
   };
 }
 
+export const authenticate = (isLoggedIn) => {
+  console.log(`isLoggedIn: ${isLoggedIn}`);
+  return {
+    type: CHANGE_AUTH,
+    payload: isLoggedIn
+  }
+}

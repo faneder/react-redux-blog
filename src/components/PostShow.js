@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 class PostShow extends Component {
 	constructor(props) {
 	  super(props);
-
 	  this.onDeleteClick = this.onDeleteClick.bind(this);
 	}
 
@@ -49,12 +48,14 @@ class PostShow extends Component {
 			<div className="row">
 				<div className="col-sm pull-xs-right">
 					<Link to="/" className="btn btn-primary btn-xs btn-action">Back To Index</Link>
-					<button
-					    className="btn btn-danger btn-xs btn-action pull-xs-right"
-					    onClick={this.onDeleteClick}
-					>
-					  Delete
-					</button>
+					{ this.props.auth &&
+						<button
+						    className="btn btn-danger btn-xs btn-action pull-xs-right"
+						    onClick={this.onDeleteClick}
+						>
+						  Delete
+						</button>
+					}
 				</div>
 			</div>
 		</div>
@@ -62,8 +63,8 @@ class PostShow extends Component {
 	}
 }
 
-const mapStateToProps = ({ posts }, ownProps) => {
-	return { post: posts[ownProps.match.params.id] };
+const mapStateToProps = ({ posts, auth }, ownProps) => {
+	return { post: posts[ownProps.match.params.id], auth: auth };
 }
 
 export default connect(mapStateToProps, { fetchPost, deletePost })(PostShow);
