@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Field, reduxForm } from 'redux-form';
 import * as actions from '../actions';
 
 class Header extends Component {
@@ -9,7 +10,7 @@ class Header extends Component {
       return <button onClick={() => this.props.authenticate(false)} className="btn btn-light">Sign Out</button>;
     }
 
-    return <button onClick={() => this.props.authenticate(true)} className="btn btn-light">Sign In</button>;
+    return <Link to="/auth/signin" className="btn btn-light">Sign In</Link>;
   }
 
   render() {
@@ -25,7 +26,7 @@ class Header extends Component {
               <Link to="/" className="nav-link">Home</Link>
             </li>
             <li className="nav-item">
-              <Link to="/resources" className="nav-link">Resources</Link>
+              <Link to="/users" className="nav-link">Users</Link>
             </li>
           </ul>
           <div className="my-2 my-sm-0">
