@@ -5,6 +5,7 @@ import { createStore, applyMiddleware } from 'redux';
 import promise from 'redux-promise';
 import reduxThunk from 'redux-thunk';
 
+// import api from './middleware/api'
 import { logger, crashReporter } from './middleware/logger';
 
 import reducers from './reducers';

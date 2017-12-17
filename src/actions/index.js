@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { browserHistory } from 'react-router';
+import { withRouter } from 'react-router-dom';
 
 import config from '../config/config';
 import {
@@ -11,6 +11,10 @@ import {
   FETCH_USERS,
   FETCH_AUTH_SUCCESS,
   FETCH_AUTH_FAILURE,
+  FETCH_SIGNUP_REQUEST,
+  FETCH_SIGNUP_SUCCESS,
+  FETCH_SIGNUP_FAILURE,
+  UNAUTH,
   SHOW_ALERT,
   HIDE_ALERT
 } from './types';
@@ -59,14 +63,6 @@ export const deletePost = (id, callback) => {
   };
 }
 
-export const authenticate = (isLoggedIn) => {
-  console.log(`isLoggedIn: ${isLoggedIn}`);
-  return {
-    type: CHANGE_AUTH,
-    payload: isLoggedIn
-  }
-}
-
 export const fetchUsers = () => {
   const request = axios.get('http://jsonplaceholder.typicode.com/users');
 
@@ -76,23 +72,22 @@ export const fetchUsers = () => {
   }
 }
 
-export const signIn = (email, password) => (dispatch) => {
-  axios.post(`${ROOT_AUTH_URL}/auth/local`, { email, password })
+export const signIn = (email, password, history) => (dispatch) => {
+  axios.post(`${ROOT_AUTH_URL}/auth/local`, { email, password})
     .then(res => {
-      console.log(`res: ${res}`)
       dispatch({ type: FETCH_AUTH_SUCCESS });
 
       localStorage.setItem('token', res.data.token);
-      browserHistory.push('/feature');
+      history.push('/');
     })
-    .catch((err) => {
-      console.log(`err: ${err}`)
-
-      dispatch(resError(FETCH_AUTH_FAILURE, 'Bad Login Info'));
-      dispatch({ type: SHOW_ALERT })
-      setTimeout(() => {
-        dispatch({ type: HIDE_ALERT })
-      }, 5000)
+    .catch(error => {
+      if (error.response) {
+        dispatch(resError(FETCH_AUTH_FAILURE, error.response.data.message));
+        dispatch({ type: SHOW_ALERT })
+        setTimeout(() => {
+          dispatch({ type: HIDE_ALERT })
+        }, 5000)
+      }
     });
 }
 
@@ -103,4 +98,32 @@ export const resError = (type, error) => {
   };
 }
 
-//register http://localhost:9000/api/users
+export const signOut = () => {
+
+  localStorage.removeItem('token');
+
+  return { type: UNAUTH };
+}
+
+export const signUp = ({name, email, password}, history) => {
+  return dispatch => {
+    dispatch({ type: FETCH_SIGNUP_REQUEST });
+
+    axios.post(`${ROOT_AUTH_URL}/api/users`, {name, email, password})
+      .then(response => {
+        dispatch({ type: FETCH_SIGNUP_SUCCESS });
+        localStorage.setItem('token', response.data.token);
+
+        history.push('/');
+      })
+      .catch(error => {
+        if (error.response) {
+          dispatch(resError(FETCH_SIGNUP_FAILURE, error.response.data.message));
+          dispatch({ type: SHOW_ALERT })
+          setTimeout(() => {
+            dispatch({ type: HIDE_ALERT })
+          }, 5000)
+        }
+      });
+  }
+}

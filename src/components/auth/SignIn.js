@@ -51,14 +51,14 @@ class SignIn extends Component {
 
 	onSubmit({email, password}) {
 		console.log(email, password);
-		this.props.signIn(email, password);
-    }
+		this.props.signIn(email, password, this.props.history);
+  }
 
 	render() {
 		const { handleSubmit, submitting, error, display } = this.props;
 
 		return (
-          	<form onSubmit={handleSubmit(this.onSubmit)}>
+        <form onSubmit={handleSubmit(this.onSubmit)}>
 				{ (error && display) &&
 					<Alert
 						error={error}
@@ -91,8 +91,6 @@ class SignIn extends Component {
 }
 
 const mapStateToProps = (state) => {
-	console.log(`state ${state}`)
-	console.log(state)
   return { error: state.auth.error, display: state.alert.display };
 }
 

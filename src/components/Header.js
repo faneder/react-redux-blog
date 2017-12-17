@@ -4,13 +4,34 @@ import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 import * as actions from '../actions';
 
+const SigninButton = () => (
+  <Link to="/auth/signin" className="btn btn-light">Sign In</Link>
+)
+
+const SignupButton = () => (
+  <Link to="/auth/signup" className="btn btn-light">Sign Up</Link>
+)
+
+const LogoutButton = (props) => {
+  return (
+    <button onClick={props.onClick} className="btn btn-light">
+      Logout
+    </button>
+  );
+}
+
 class Header extends Component {
   actionBtn() {
     if (this.props.auth) {
-      return <button onClick={() => this.props.authenticate(false)} className="btn btn-light">Sign Out</button>;
+      return <LogoutButton onClick={() => this.props.signOut()} />
     }
 
-    return <Link to="/auth/signin" className="btn btn-light">Sign In</Link>;
+    return (
+      <div>
+        <SigninButton />
+        <SignupButton />
+      </div>
+    )
   }
 
   render() {
@@ -29,7 +50,7 @@ class Header extends Component {
               <Link to="/users" className="nav-link">Users</Link>
             </li>
           </ul>
-          <div className="my-2 my-sm-0">
+          <div>
             {this.actionBtn()}
           </div>
         </div>
@@ -40,7 +61,7 @@ class Header extends Component {
 
 //going to show up as props inside of our head or will place our map state to props
 const mapStateToProps = (state) => {
-  return { auth: state.auth };
+  return { auth: state.auth.authenticated };
 }
 
 export default connect(mapStateToProps, actions)(Header);
